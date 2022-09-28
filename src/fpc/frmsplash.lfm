@@ -1,0 +1,76 @@
+object FrmSplash: TFrmSplash
+  Left = 267
+  Height = 193
+  Top = 479
+  Width = 179
+  ActiveControl = Edit1
+  BorderStyle = bsNone
+  Caption = 'FrmSplash'
+  ClientHeight = 193
+  ClientWidth = 179
+  FormStyle = fsSystemStayOnTop
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnMouseDown = FormMouseDown
+  OnMouseMove = FormMouseMove
+  OnMouseUp = FormMouseUp
+  OnResize = FormResize
+  OnShow = FormShow
+  OnWindowStateChange = FormWindowStateChange
+  ShowInTaskBar = stNever
+  LCLVersion = '2.2.2.0'
+  object wbContainer: TWVWindowParent
+    Left = 16
+    Height = 106
+    Top = 24
+    Width = 64
+    Constraints.OnChange = wbContainerSizeConstraintsChange
+    TabOrder = 0
+    Enabled = False
+    OnEnter = wbContainerEnter
+    OnExit = wbContainerExit
+    Browser = wbFlash
+  end
+  object Edit1: TEdit
+    Left = 8
+    Height = 15
+    Top = 168
+    Width = 136
+    BorderStyle = bsNone
+    ReadOnly = True
+    TabStop = False
+    TabOrder = 1
+    Text = 'Edit1'
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 34
+    Caption = 'Label1'
+    ParentColor = False
+    OnMouseDown = FormMouseDown
+    OnMouseMove = FormMouseMove
+    OnMouseUp = FormMouseUp
+  end
+  object wbFlash: TWVBrowser
+    TargetCompatibleBrowserVersion = '104.0.1293.44'
+    AllowSingleSignOnUsingOSPrimaryAccount = False
+    OnAfterCreated = wbFlashAfterCreated
+    OnAcceleratorKeyPressed = wbFlashAcceleratorKeyPressed
+    OnDOMContentLoaded = wbFlashDOMContentLoaded
+    Left = 104
+    Top = 16
+  end
+  object tmrWb: TTimer
+    Interval = 100
+    OnTimer = tmrWbTimer
+    Left = 104
+    Top = 64
+  end
+  object tmrVDesktop: TTimer
+    OnTimer = tmrVDesktopTimer
+    Left = 104
+    Top = 120
+  end
+end

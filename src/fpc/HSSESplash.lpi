@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <PathDelim Value="\"/>
+    <General>
+      <SessionStorage Value="InProjectDir"/>
+      <Title Value="HSSESplash"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <XPManifest>
+        <TextName Value="HSSE Splash"/>
+        <TextDesc Value="Splash for Windows"/>
+      </XPManifest>
+      <Icon Value="0"/>
+      <Resources Count="10">
+        <Resource_0 FileName="..\..\res\num\num-1-32x32.ico" Type="ICON" ResourceName="NUM-1-32X32"/>
+        <Resource_1 FileName="..\..\res\num\num-2-32x32.ico" Type="ICON" ResourceName="NUM-2-32X32"/>
+        <Resource_2 FileName="..\..\res\num\num-3-32x32.ico" Type="ICON" ResourceName="NUM-3-32X32"/>
+        <Resource_3 FileName="..\..\res\num\num-4-32x32.ico" Type="ICON" ResourceName="NUM-4-32X32"/>
+        <Resource_4 FileName="..\..\res\num\num-5-32x32.ico" Type="ICON" ResourceName="NUM-5-32X32"/>
+        <Resource_5 FileName="..\..\res\num\num-6-32x32.ico" Type="ICON" ResourceName="NUM-6-32X32"/>
+        <Resource_6 FileName="..\..\res\num\num-7-32x32.ico" Type="ICON" ResourceName="NUM-7-32X32"/>
+        <Resource_7 FileName="..\..\res\num\num-8-32x32.ico" Type="ICON" ResourceName="NUM-8-32X32"/>
+        <Resource_8 FileName="..\..\res\num\num-9-32x32.ico" Type="ICON" ResourceName="NUM-9-32X32"/>
+        <Resource_9 FileName="..\..\res\num\num-x-32x32.ico" Type="ICON" ResourceName="NUM-X-32X32"/>
+      </Resources>
+    </General>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <MajorVersionNr Value="1"/>
+      <MinorVersionNr Value="1"/>
+      <StringTable Comments="HSSE Splash Ergonomic / Office Exercise Splash Screen" CompanyName="ablehunder" FileDescription="HSSE Splash" LegalCopyright="aby herwendo" LegalTrademarks="ablehunder" ProductName="HSSESplash"/>
+    </VersionInfo>
+    <BuildModes>
+      <Item Name="Default" Default="True"/>
+      <Item Name="Debug">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="..\..\HSSESplash"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+            <VerifyObjMethodCallValidity Value="True"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf3"/>
+              <TrashVariables Value="True"/>
+              <UseExternalDbgSyms Value="True"/>
+            </Debugging>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+        </CompilerOptions>
+      </Item>
+      <Item Name="Release">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="..\..\bin\HSSESplash"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <CodeGeneration>
+            <SmartLinkUnit Value="True"/>
+            <Optimizations>
+              <OptimizationLevel Value="3"/>
+            </Optimizations>
+            <SmallerCode Value="True"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <GenerateDebugInfo Value="False"/>
+              <DebugInfoType Value="dsDwarf2Set"/>
+              <StripSymbols Value="True"/>
+            </Debugging>
+            <LinkSmart Value="True"/>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+          <Other>
+            <Verbosity>
+              <ShowCompProc Value="True"/>
+            </Verbosity>
+          </Other>
+        </CompilerOptions>
+      </Item>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+    <RunParams>
+      <FormatVersion Value="2"/>
+    </RunParams>
+    <RequiredPackages>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+      <Item>
+        <PackageName Value="WebView4Delphi"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+    </RequiredPackages>
+    <Units>
+      <Unit>
+        <Filename Value="HSSESplash.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="frmsplash.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FrmSplash"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="FrmSplash"/>
+      </Unit>
+      <Unit>
+        <Filename Value="frmmain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FrmMain"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="FrmMain"/>
+      </Unit>
+      <Unit>
+        <Filename Value="splashutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SplashUtils"/>
+      </Unit>
+      <Unit>
+        <Filename Value="disablewinkeys.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="DisableWinKeys"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ttraynotifyextended.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TTrayNotifyExtended"/>
+      </Unit>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="HSSESplash"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Optimizations>
+        <OptimizationLevel Value="4"/>
+      </Optimizations>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions>
+      <Item>
+        <Name Value="EAbort"/>
+      </Item>
+      <Item>
+        <Name Value="ECodetoolError"/>
+      </Item>
+      <Item>
+        <Name Value="EFOpenError"/>
+      </Item>
+      <Item>
+        <Name Value="EConvertError"/>
+      </Item>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

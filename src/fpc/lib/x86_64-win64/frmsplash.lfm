@@ -1,0 +1,38 @@
+object FrmSplash: TFrmSplash
+  Left = 565
+  Height = 240
+  Top = 290
+  Width = 320
+  BorderStyle = bsNone
+  Caption = 'FrmSplash'
+  ClientHeight = 240
+  ClientWidth = 320
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnResize = FormResize
+  LCLVersion = '2.2.2.0'
+  object jvpanel1: TPanel
+    Left = 144
+    Height = 108
+    Top = 83
+    Width = 102
+    Caption = 'jvpanel1'
+    ParentColor = False
+    TabOrder = 0
+    OnClick = jvpanel1Click
+  end
+  object GroupBox1: TGroupBox
+    Left = 24
+    Height = 108
+    Top = 104
+    Width = 148
+    Caption = 'GroupBox1'
+    TabOrder = 1
+  end
+  object PaintBox1: TPaintBox
+    Left = 48
+    Height = 108
+    Top = 24
+    Width = 171
+  end
+end

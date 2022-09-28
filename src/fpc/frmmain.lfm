@@ -1,0 +1,89 @@
+object FrmMain: TFrmMain
+  Left = 267
+  Height = 308
+  Top = 127
+  Width = 176
+  ActiveControl = editFocus
+  BorderStyle = bsNone
+  Caption = 'FrmMain'
+  ClientHeight = 308
+  ClientWidth = 176
+  Color = clWhite
+  DefaultMonitor = dmPrimary
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = SetFormFocus
+  OnWindowStateChange = FormWindowStateChange
+  ShowInTaskBar = stNever
+  LCLVersion = '2.2.2.0'
+  object editFocus: TEdit
+    Left = 40
+    Height = 23
+    Top = 0
+    Width = 128
+    OnExit = editFocusExit
+    OnKeyDown = editFocusKeyUp
+    OnKeyUp = editFocusKeyUp
+    TabOrder = 0
+    Text = 'editFocus'
+  end
+  object imgLogo: TImage
+    Left = 0
+    Height = 33
+    Top = 0
+    Width = 33
+    OnClick = imgLogoClick
+    Stretch = True
+    Transparent = True
+  end
+  object tmrSplash: TTimer
+    Enabled = False
+    OnTimer = tmrSplashTimer
+    Left = 40
+    Top = 112
+  end
+  object tmrPlay: TTimer
+    Enabled = False
+    OnTimer = tmrPlayTimer
+    Left = 40
+    Top = 64
+  end
+  object tmrNotify: TTimer
+    Enabled = False
+    Interval = 7000
+    OnTimer = tmrNotifyTimer
+    Left = 40
+    Top = 160
+  end
+  object tmrCounter: TTimer
+    Enabled = False
+    OnTimer = tmrCounterTimer
+    Left = 40
+    Top = 208
+  end
+  object evLog: TEventLog
+    AppendContent = False
+    LogType = ltSystem
+    Active = False
+    RaiseExceptionOnError = False
+    DefaultEventType = etInfo
+    CustomLogType = 0
+    EventIDOffset = 0
+    Paused = False
+    Left = 112
+    Top = 64
+  end
+  object tmrInstanceServer: TTimer
+    Interval = 100
+    OnTimer = tmrInstanceServerTimer
+    Left = 40
+    Top = 256
+  end
+  object trayNotify: TTrayIcon
+    OnClick = trayNotifyClick
+    Left = 112
+    Top = 160
+  end
+end

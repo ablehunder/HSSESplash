@@ -1,0 +1,65 @@
+object FrmMain: TFrmMain
+  Left = 503
+  Height = 246
+  Top = 230
+  Width = 428
+  BorderStyle = bsNone
+  Caption = 'FrmMain'
+  ClientHeight = 246
+  ClientWidth = 428
+  DefaultMonitor = dmPrimary
+  OnCreate = FormCreate
+  ShowInTaskBar = stNever
+  LCLVersion = '2.2.2.0'
+  object Edit1: TEdit
+    Left = 100
+    Height = 23
+    Top = 0
+    Width = 100
+    OnExit = Edit1Exit
+    OnKeyDown = Edit1KeyUp
+    OnKeyUp = Edit1KeyUp
+    TabOrder = 0
+    Text = 'Edit1'
+  end
+  object Image1: TImage
+    Left = 0
+    Height = 33
+    Top = 0
+    Width = 33
+    Stretch = True
+    Transparent = True
+  end
+  object tmrSplash: TTimer
+    Enabled = False
+    OnTimer = tmrSplashTimer
+    Left = 100
+    Top = 32
+  end
+  object tmrPlay: TTimer
+    Enabled = False
+    OnTimer = tmrPlayTimer
+    Left = 100
+    Top = 64
+  end
+  object tmrNotify: TTimer
+    Enabled = False
+    Interval = 7000
+    OnTimer = tmrNotifyTimer
+    Left = 100
+    Top = 96
+  end
+  object popupAlert: TPopupNotifier
+    Color = clInfoBk
+    Icon.Data = {
+      07544269746D617000000000
+    }
+    Text = 'Text'
+    Title = 'Caption'
+    TitleFont.Style = [fsBold]
+    Visible = False
+    OnClose = popupAlertClose
+    Left = 100
+    Top = 144
+  end
+end
