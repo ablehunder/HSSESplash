@@ -4,17 +4,17 @@ A simple *splash screen* application which showing content in specific duration 
 
 ## Table of contents
 <!-- vscode-markdown-toc -->
-* 1. [About](#About)
-* 2. [Features](#Features)
-* 3. [Strength & Weakness](#StrengthWeakness)
-* 4. [Demo](#Demo)
-* 5. [Installation](#Installation)
-* 6. [Configuration File](#ConfigurationFile)
-* 7. [Command](#Command)
-* 8. [User Log Activity and Logging Server](#UserLogActivityandLoggingServer)
-* 9. [BuildSource](#BuildSource)
-* 10. [Known bugs](#Knownbugs)
-* 11. [License & Disclaimer](#LicenseDisclaimer)
+ 1. [About](#About)
+ 2. [Features](#Features)
+ 3. [Strength & Weakness](#StrengthWeakness)
+ 4. [Demo](#Demo)
+ 5. [Installation](#Installation)
+ 6. [Configuration File](#ConfigurationFile)
+ 7. [Command](#Command)
+ 8. [User Log Activity and Logging Server](#UserLogActivityandLoggingServer)
+ 9. [BuildSource](#BuildSource)
+ 10. [Known bugs](#Knownbugs)
+ 11. [License & Disclaimer](#LicenseDisclaimer)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
