@@ -74,14 +74,18 @@ namespace HSSESplash
                     this.wbFlash.Source = new Uri(url);
                 }catch(Exception emain){
                     // maybe its a file??
+                    // try relative to current working directory, and then current app location
+                    String path = Path.Combine(Environment.CurrentDirectory, @url);
                     try{
-                        Uri newuri = new Uri(Path.Combine(Environment.CurrentDirectory, @url));
+                        if (!File.Exists(path))
+                            path = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @url);
+                        Uri newuri = new Uri(path);
                         this.wbFlash.Source = newuri;
                     }catch(Exception esub){
                         Console.WriteLine(esub.Message);
-                        // last try as file text
+                        // last try file as text source
                         try{
-                            string stxt = File.ReadAllText(@url);
+                            string stxt = File.ReadAllText(path);
                         if ((wbFlash == null) || (wbFlash.CoreWebView2 == null))
                             pTxtToReplaceUrl = stxt;
                         else
