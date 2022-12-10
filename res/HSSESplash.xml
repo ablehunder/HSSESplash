@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HSSESplash>
+    <url help="url of web page to load. Using https://, http://, or file:// for local computer, or any file content either absolute path or relative path to current working directory">
+        ..\..\samples\randomredirect.html
+    </url>
+    <appName default="SPLASH" help="Identifier to system or log.">
+        HSSESplash 
+    </appName>
+    <caption default="Splash" help="Caption/text shown in notification or window form. Use your version of caption so user can easily understand the notification.">
+        HSSE Splash
+    </caption>
+    <duration default="10" help="Splash show duration, in second.">
+        120
+    </duration>
+    <interval default="0" help="Interval between splash shown, unit in hour (e.g 1.5 means one and half hour or 90 minutes). Interval=0 means it only occur once and then application will exit.">
+        1.6
+    </interval>
+    <size default="50" help="Window size, in percentage of screen. Put value 100 to show it in full screen.">
+        25
+    </size>
+    <messageNotify help="Message shown prior splash appear. Leave it blank to have the notification not popping up.">
+Work Break Reminder.
+Splash will be shown. 
+Click here or press Esc to skip.
+    </messageNotify>
+    <notificationClick default="open" help="What action will occur whenever user click on 'messageNotify'. It can be 'open' to open the splash immediately, or 'skip' so user can suspend watching it.">
+        skip
+    </notificationClick>
+    <maxCancel default="0" help="How many times user may skip watching splash before splash is forced to be shown. Put value=0 if you allow user skip it many times.">
+        2
+    </maxCancel>
+    <cancelNotify help="Message shown whenever user choose to skip splash. Leave it blank to have the notification not popping up.">
+Skip splash.
+Already skip {0} time(s) from maximum {1} allowed.
+    </cancelNotify>
+    <noSkipNotify help="Message shown whenever user has reach maximum 'maxCancel' skip counter and forced to watch splash. Leave it blank to have the notification not popping up.">
+Force show.
+Reach maximum {0} time(s) skip allowed.
+    </noSkipNotify>
+    <disableLogging default="false" help="Disable log user activity, either to local computer event logger or server.">
+        false
+    </disableLogging>
+    <logServer help="URL server to log user activity. Leave it blank to disable sending log to server regardless 'disableLogging' value.">
+    </logServer>
+    <disableEscape help="Allow user to press 'escape key' to skip watching the splash content.">
+        false
+    </disableEscape>
+    <disableKeyLock default="false" help="Disable locking some function of keyboard to OS, such as alt-tab, etc.">
+        false
+    </disableKeyLock>
+    <showCloseButton default="false" help="Show close button in splash window. It is useful if you want to keep user unable to escape from playing the content, or you want to maintain the show with less border window form but give user ability to skip by pressing 'escape key'. Not working when option disableEscape=true">
+        false
+    </showCloseButton>
+    <disableDragMove default="false" help="User able to move window using mouse over the inside window instead of using form header. It is useful to have window movable by dragging inside part of the form when 'showCloseButton=false'.">
+        false
+    </disableDragMove>
+    <disablePageBlock default="false" help="Whenever disabled, user can access content interactively. Keep the value to 'false' so user cannot access content.">
+        false
+    </disablePageBlock>
+    <disableMultiScreen default="false" help="When you have multiple monitor/display, this application will automatically show splash onto other screen.">
+        false
+    </disableMultiScreen>
+    <disableTrayIcon default="false" help="Disable icon in tray notification area so user can click and watch splash at anytime">
+        false
+    </disableTrayIcon>
+    <showTrayMenu default="true" help="Show context menu whenver user right-click icon in notification area in conjunction to 'disableTrayIcon=false'. You may set it to 'false' so user cannot pause or exit from this application.">
+        true
+    </showTrayMenu>
+    <autoRun default="false" help="Make this application run whenever computer is started.">
+        true
+    </autoRun>
+</HSSESplash>

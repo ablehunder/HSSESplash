@@ -216,7 +216,7 @@ end;
 
 procedure TFrmMain.initialize(readIni: bool = true; paramList: TStringList = nil);
 const
-  C_INI: string = 'General';
+  C_INI: string = 'HSSESplash';
 var
   buff: string;
   pMemIni : TMemIniFile = nil;
@@ -239,9 +239,9 @@ begin
     if not pIsInitialized then
       pIniFile:= GetEnvironmentVariable('LOCALAPPDATA') + DirectorySeparator
         + Application.Title + DirectorySeparator + Application.Title + '.ini';
-    if not FileExists(pIniFile) then pIniFile:= Application.Title + '.ini';
   end;
-  pWriteIni:= getParamAsBool(params, '-w', false) and FileExists(pIniFile);
+  if not FileExists(pIniFile) then pIniFile:= Application.Title + '.ini';
+  pWriteIni:= getParamAsBool(params, '-w', false);// and FileExists(pIniFile);
 
   // check for multiple instance
   pMultipleInstance:= getParamAsBool(params, '-mi', false);
@@ -834,7 +834,7 @@ end;
 
 procedure TFrmMain.editFocusExit(Sender: TObject);
 begin
-    SetKeyFocus;
+    //SetKeyFocus;
 end;
 
 end.

@@ -1,10 +1,13 @@
 <html>
 <head>
-<script language="javascript">var ru = [
+<style>body{background-color:#000000;font: 12pt Arial;color:#000000;}</style>
+<script language="javascript">
+var fixperhour=false; // false = play random at any time, true = play same content at the same hour
+var ru = [ // add any media you want to be shown
     "ergo.id.png", "panduan.png", "StretchAtYourDesk.mp4"
- ],r=Math.floor(Math.random()*3),d=new Date();r=(d.getDate()+d.getHours())%ru.length;setTimeout(function(){location.href=ru[r];},100);
+ ],d=new Date(),r=fixperhour?(d.getDate()+d.getHours())%ru.length:Math.floor(Math.random()*ru.length); 
 </script>
-<style>body{background-color:#04435e;font: 12pt Arial;color:#ffffff;}</style>
 </head>
 <body><h1>Example content for splash</h1>You will be redirected in a few moment..</body>
+<script language="javascript">var o = 0; setInterval(function(){o+=.05;document.body.style.background="rgba(0,0,0,"+o+")"; if (o>=0) location.href=ru[r];},10);</script>
 </html>

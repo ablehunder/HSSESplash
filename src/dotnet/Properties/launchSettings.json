@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HSSESplash": {
+      "commandName": "Project",
+      "workingDirectory": "."
+    }
+  }
+}
