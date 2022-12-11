@@ -71,13 +71,13 @@ namespace HSSESplash
 
             buff.Append("Usage: \n");
             string file = GetType().Assembly.Location;
-            file = Assembly.GetExecutingAssembly().Location;
+            file = Application.ExecutablePath;
             string app = Path.GetFileNameWithoutExtension(file);
             //buff.Append(Path.GetFileName(file));
             buff.Append(Application.ProductName);
             buff.Append(" -u url [-t time] [-i interval] [-i size] [-mc maxcnt] ");
             buff.Append("[-a appname] [-c caption] [-m msg] [-l urlLog] [-f filename] ");
-            buff.Append("[-db] [-dl] [-de] [-dk] [-dm] [-dd] [-dt] [-mi] [-x] [-w] [-r|-dr]\n");
+            buff.Append("[-db] [-dl] [-de] [-dk] [-dm] [-dd] [-dt] [-sm] [-mi] [-x] [-w] [-r|-dr]\n");
             buff.Append(" -u url     : url of web page to load.");
             buff.Append(" Using https://, http://, or file:/// to load file in local computer\n");
             buff.Append(" -t time    : duration splash will show in second (default = ");
@@ -99,6 +99,7 @@ namespace HSSESplash
             buff.Append(" -dk        : disable system key lock\n");
             buff.Append(" -dm        : disable show into multiple screen\n");
             buff.Append(" -dt        : disable tray icon\n");
+            buff.Append(" -sm        : show context menu in tray icon\n");
             buff.Append(" -mc maxcnt : max cancel splash count before splash is forced to be shown (default = 0, it means never force splash to be shown)\n");
             buff.Append(" -mi        : enable multiple instance running application\n");
             buff.Append(" -stop      : stop existing single instance running\n");
@@ -123,9 +124,8 @@ namespace HSSESplash
                 aFileTime = File.GetLastWriteTime(aFileName);
                 return true;
             }
-            catch (Exception exc)
+            catch (Exception)
             {
-                Console.WriteLine(exc.Message);
                 return false;
             }
         }
@@ -147,6 +147,7 @@ namespace HSSESplash
             if (paramList == null) paramList = new List<string>();
 
             string asmfile = Assembly.GetExecutingAssembly().Location;
+            asmfile = Process.GetCurrentProcess().MainModule.FileName;
             string app = Path.GetFileNameWithoutExtension(asmfile);
 
             // first, check if we sould get config from ini
@@ -154,15 +155,15 @@ namespace HSSESplash
             if (!String.IsNullOrWhiteSpace(buff)) pIniFile = buff;
             else
             {
-                if (!pIsInitialized)
+                if (!pIsInitialized) // from local app data
                     pIniFile = String.Concat(Application.LocalUserAppDataPath,
                         Path.DirectorySeparatorChar, app, 
                         Path.DirectorySeparatorChar, app, ".xml");
             }
-            if (!File.Exists(pIniFile))
+            if (!File.Exists(pIniFile)) // from current working dir
                 pIniFile = String.Concat(app, ".xml");
-            if (!File.Exists(pIniFile))
-                pIniFile = String.Concat(Path.GetDirectoryName(Application.ExecutablePath), Path.DirectorySeparatorChar, app, ".xml");
+            if (!File.Exists(pIniFile)) // from executing location
+                pIniFile = String.Concat(Path.GetDirectoryName(asmfile), Path.DirectorySeparatorChar, app, ".xml");
             pWriteIni = SplashUtils.getParamBool(paramList, "-w", false);
 
             // check for multiple instance
@@ -355,7 +356,7 @@ namespace HSSESplash
                     serializer.Serialize(fs, cfg);
                     fs.Close();
                 }
-                finally { }
+                catch(Exception) { } finally { }
             }
 
             if (!String.IsNullOrWhiteSpace(pIniFile))
@@ -380,10 +381,7 @@ namespace HSSESplash
                         pRegistry.DeleteValue(Application.ProductName);
                 }
             }
-            catch (System.ArgumentException exc)
-            {
-                Console.WriteLine(exc);
-            }
+            catch (System.ArgumentException) { }
             finally
             {
                 if (pRegistry != null)
@@ -405,12 +403,15 @@ namespace HSSESplash
                         trayNotify.Icon = tmrPlay.Enabled?lastIcon:pauseIcon;
                         ((ToolStripMenuItem) s).Text =
                             tmrPlay.Enabled?"Pause":"Resume";
-                    }, "PAUSE"),
+                    }, "PAUSE")
+                    }
+                };
+            if (pShowTrayMenu && !pDisableEscape)
+                trayNotify.ContextMenuStrip.Items.Add(
                     new ToolStripMenuItem("Exit", null, (s,e)=>{
                         goodBye();
                     }, "EXIT")
-                    }
-                };
+                );
 
             if (SplashUtils.getParamBool(paramList, "-stop", false))
                 goodBye(); // just stop.
@@ -447,11 +448,7 @@ namespace HSSESplash
                         EventLog.WriteEntry(pAppName, msg.ToString(),
                         EventLogEntryType.Information, 1001);
                 }
-                catch (Exception exc)
-                {
-                    // pass
-                    Console.WriteLine(exc.Message);
-                }
+                catch (Exception) { }
 
             }
         }
@@ -483,11 +480,7 @@ namespace HSSESplash
                     // The source is created.  Exit the application to allow it to be registered.
                 }
             }
-            catch (Exception exc)
-            {
-                Console.WriteLine(exc.Message);
-                // pass
-            }
+            catch (Exception) { }
 
             this.Text = pCaption;
             editFocus.Text = "";
@@ -499,12 +492,15 @@ namespace HSSESplash
 
             try
             {
-                string file = GetType().Assembly.Location;
+                string file = Assembly.GetExecutingAssembly().Location;
+                file = Application.ExecutablePath;
+                file = Process.GetCurrentProcess().MainModule.FileName;
                 string app = Path.GetFileNameWithoutExtension(file);
-                string filename = String.Concat(Application.StartupPath,
+                string filename = String.Concat(Path.GetDirectoryName(file),
                     Path.DirectorySeparatorChar, app, ".ico");
                 this.Icon = Icon.ExtractAssociatedIcon(filename);
             }
+            catch(Exception){}
             finally { }
 
             imgLogo.Image = Bitmap.FromHicon(this.Icon.Handle);
@@ -542,8 +538,10 @@ namespace HSSESplash
             Console.WriteLine("SetKeyFocus");
             if (!tmrSplash.Enabled) return;
             if (pDisablePageBlock) return;
-            try { if (this.Visible) this.Activate(); this.Focus(); } finally { }
-            try { if (this.Visible) editFocus.Focus(); } finally { }
+            try { if (this.Visible) this.Activate(); this.Focus(); } 
+                catch(Exception){ } finally { }
+            try { if (this.Visible) editFocus.Focus(); } 
+                catch(Exception){ } finally { }
         }
 
         /// <summary>
@@ -585,10 +583,7 @@ namespace HSSESplash
             {
                 this.trayNotify.Dispose();
             }
-            catch (Exception exc)
-            {
-                Console.WriteLine(exc.Message);
-            }
+            catch (Exception) {}
             Console.WriteLine("Goodbye..");
             this.Close();
             this.Dispose();
@@ -704,8 +699,7 @@ namespace HSSESplash
                         {
                             FrmSplash frm = pCloned[i];
                             if (frm != null) frm.formCloseRequested = false;
-                        }
-                        finally { }
+                        } catch(Exception) { } finally { }
                     }
                 return;
             }
@@ -729,7 +723,7 @@ namespace HSSESplash
                 String ico = String.Format("NUM-{0}-32x32", pCancelCounter > 9 ? "X" : pCancelCounter.ToString());
                 Icon numicon = (Icon) resourceManager.GetObject(ico);
                 if (!this.IsDisposed) trayNotify.Icon = (pCancelCounter <= 0 ? this.Icon : numicon) ?? this.Icon;
-            } finally{}
+            } catch(Exception) { } finally{}
 
             logMe(logType);
             tmrSplash.Enabled = false;

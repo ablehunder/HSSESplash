@@ -124,7 +124,7 @@ namespace HSSESplash
             try{
                 wbFlash.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
                 await InitializeAsyncWebView2();
-            } finally{}
+            } catch(Exception) { } finally{}
             
             SetKeyFocus();
         }
@@ -228,7 +228,8 @@ namespace HSSESplash
                             nw.Show(null);
                             vdm.MoveWindowToDesktop(Handle, vdm.GetWindowDesktopId(nw.Handle));
                         }
-                    }finally{
+                    } catch(Exception) { }
+                    finally{
                         // showmessage('get over here');
                         this.Hide();
                         this.Show();

@@ -8,30 +8,38 @@
     <!-- aby: use to run without .net core -->
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!--
+    <_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError> 
+    -->
+    <TrimMode>Link</TrimMode>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1343.22" />
   </ItemGroup>
   <ItemGroup>
     <ContentWithTargetPath Include="..\..\res\HSSESplash.ico">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>HSSESplash.ico</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
   <ItemGroup>
     <ContentWithTargetPath Include="..\..\res\HSSESplash.xml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>HSSESplash.xml</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
   <ItemGroup>
     <ContentWithTargetPath Include="..\..\samples\randomredirect.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>media/randomredirect.html</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
   <ItemGroup>
     <ContentWithTargetPath Include="..\..\samples\ergo.id.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>media/ergo.id.png</TargetPath>
     </ContentWithTargetPath>

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -79,11 +80,10 @@ namespace HSSESplash
                     String path = Path.Combine(Environment.CurrentDirectory, @url);
                     try{
                         if (!File.Exists(path))
-                            path = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @url);
+                            path = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), @url);
                         Uri newuri = new Uri(path);
                         this.wbFlash.Source = newuri;
-                    }catch(Exception esub){
-                        Console.WriteLine(esub.Message);
+                    }catch(Exception){
                         // last try file as text source
                         try{
                             string stxt = File.ReadAllText(path);
@@ -91,8 +91,7 @@ namespace HSSESplash
                             pTxtToReplaceUrl = stxt;
                         else
                             wbFlash.NavigateToString(stxt); 
-                        }catch(Exception elast){
-                            Console.WriteLine(elast.Message);
+                        }catch(Exception){
                             MessageBox.Show(emain.Message, 
                                 formMain.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
