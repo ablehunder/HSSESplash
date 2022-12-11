@@ -16,7 +16,7 @@
         1.6
     </interval>
     <size default="50" help="Window size, in percentage of screen. Put value 100 to show it in full screen.">
-        25
+        75
     </size>
     <messageNotify help="Message shown prior splash appear. Leave it blank to have the notification not popping up.">
 Work Break Reminder.
@@ -63,7 +63,7 @@ Reach maximum {0} time(s) skip allowed.
     <disableTrayIcon default="false" help="Disable icon in tray notification area so user can click and watch splash at anytime">
         false
     </disableTrayIcon>
-    <showTrayMenu default="true" help="Show context menu whenver user right-click icon in notification area in conjunction to 'disableTrayIcon=false'. You may set it to 'false' so user cannot pause or exit from this application.">
+    <showTrayMenu default="true" help="Show context menu whenever user right-click icon in notification area in conjunction to 'disableTrayIcon=false'. You may set it to 'false' so user cannot pause or exit from this application.">
         true
     </showTrayMenu>
     <autoRun default="false" help="Make this application run whenever computer is started.">
