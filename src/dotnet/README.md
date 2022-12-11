@@ -17,12 +17,19 @@ You might try to edit <code>HSSESplash.csproj</code> as necessary. Pay attention
     or
         
         dotnet run -sc -c Debug
+        dotnet run -sc -c Release
     
 - Publish the package. We use **self-contained** to publish the  runtime package according to *runtime identifier* specified in <code>HSSESplash.csproj</code>.
 
         dotnet publish -sc -c Release
 
-See further help on [dotnet documentation](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet) (or simply type `dotnet -h` in command line prompt).<br>Or refer to [deployment documentation](https://learn.microsoft.com/en-us/visualstudio/deployment/?view=vs-2022) if you wish to use Visual Studio.
+        dotnet publish -r win-x64 --no-self-contained /p:PublishSingleFile=true -c Release -o ..\..\pkg\HSSESplash.win-x64.dotnet
+
+        dotnet publish -r win-x64 --self-contained /p:PublishSingleFile=true -c Release -o ..\..\pkg\HSSESplash.win-x64.dotnet.compact
+
+        dotnet publish -r win-x64 --self-contained -c Release -o ..\..\pkg\HSSESplash.win-x64.dotnet.full
+
+See further help on [.NET application publishing overview](https://learn.microsoft.com/en-us/dotnet/core/deploying/) or [dotnet documentation](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet) (or simply type `dotnet -h` in command line prompt).<br>Or refer to [deployment documentation](https://learn.microsoft.com/en-us/visualstudio/deployment/?view=vs-2022) if you wish to use Visual Studio.
 
 ## Configure the application & XML Configuration Tag
 This application has ***hot configuration reload*** feature, which mean, some of these options can be changed while application is active and reloaded without having to restart. It also can be configured using arguments in command line.

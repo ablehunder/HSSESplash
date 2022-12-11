@@ -1,6 +1,10 @@
 # ![l](res/HSSESplash.ico) HSSE Splash - Ergonomic / Office Exercise Splash Screen
 
-A simple *splash screen* application which showing content in specific duration and appear again in some interval
+A simple *splash screen* application which showing content in specific duration and appear again in some interval.
+
+## Download 
+
+You may find and download binary files from [release page](https://github.com/ablehunder/HSSESplash/releases).
 
 ## Table of contents
 <!-- vscode-markdown-toc -->
@@ -86,7 +90,7 @@ And it may take you a short time to learn to configure the file :)
 ##  5. <a name='Installation'></a>Installation
 - Just copy `HSSESplash.exe` & `WebView2Loader.dll` into any directory. 
 - You may also put `HSSESplash.ico` file in directory as icon for splash
-- Configure `HSSESplash.ini` file as necessary
+- Configure `HSSESplash.ini` or `HSSESplash.xml` file as necessary
 - See specific documentation for [.NET deployment](src/dotnet/README.md)
 
 ##  6. <a name='ConfigurationFile'></a>Configuration File
@@ -98,7 +102,7 @@ This application has **hot configuration reload** feature, which mean, some of t
 - **interval** (*decimal*, default = 0): Interval between splash shown, unit in hour (e.g 1.5 means one and half hour or 90 minutes). Interval=0 means it only occur once and then application will exit. If omitted splash will be shown once. (equal to argument `–i`)
 - **size** (*integer*, default = 50): Window size, in percentage of screen. Put value 100 to show it in full screen. (equal to argument `-s`)
 - **messageNotify** (*string*): Message shown prior splash appear. Leave it blank to have the notification not popping up. (equal to argument `-m`).
-- **notificationClick**  (*string(open|skip)*, default=open): What action will occur whenever user click on *messageNotify*. It can be 'open' to open the splash immediately, or 'skip' so user can suspend watching it. Please consider to have *messageNotify* accordingly with this option.
+- **notificationClick**  (*string(open|skip)*, default=open): What action will occur whenever user click on *messageNotify*. It can be 'open' to open the splash immediately, or 'skip' so user can suspend watching it. Please consider to have *messageNotify* accordingly with this option. (equal to argument `-nc`)
 - **maxCancel** (*integer*, default = 0, it means never force splash to be shown): How many times user may skip watching splash before splash is forced to be shown. Put value=0 if you allow user skip it many times. (equal to argument `-mc`)
 - **cancelNotify** (*string*): Message shown whenever user choose to skip splash. Use blank/space to disable this notification.
 - **noSkipNotify** (*string*): Message shown whenever user has reach maximum *maxCancel* skip counter and forced to watch splash. Use blank/space to disable this notification.
@@ -118,7 +122,7 @@ icon (equal to argument `–sm`)
 ##  7. <a name='Command'></a>Command
 
 Usage:
-`HSSESplash -u url [-t time] [-i interval] [-i size] [-mc maxcnt] [-a appname] [-c caption] [-m msg] [-l urlLog] [-f filename] [-db] [-dl] [-de] [-dk] [-dm] [-dd] [-dt] [-mi] [-x] [-w] [-r|-dr]`
+`HSSESplash -u url [-t time] [-i interval] [-i size] [-mc maxcnt] [-a appname] [-c caption] [-m msg] [-l urlLog] [-f filename] [-db] [-dl] [-de] [-dk] [-dm] [-dd] [-dt] [-sm] [-mi] [-x] [-w] [-r|-dr]`
 
     -u url     : url of web page to load. Using https://, http://, or file:/// to load file in local computer
     -t time    : duration splash will show in second (default = 10 seconds; 0 = forever)
@@ -137,6 +141,7 @@ Usage:
     -dk        : disable system key lock
     -dm        : disable show into multiple screen
     -dt        : disable tray icon
+    -sm        : show context menu in tray icon
     -mc maxcnt : max cancel splash count before splash is forced to be shown (default = 0, it means never force splash to be shown)
     -mi        : enable multiple instance running application
     -stop      : stop existing single instance running
