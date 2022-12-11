@@ -7,7 +7,7 @@ interface
 uses
   Windows, Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, IniFiles,
   eventlog, process, advancedsingleinstance, singleinstance, registry, lclintf,
-  ExtCtrls, Graphics, SplashUtils, FrmSplash, DisableWinKeys;
+  ExtCtrls, Graphics, Menus, SplashUtils, FrmSplash, DisableWinKeys, StrUtils;
 
 type
 
@@ -17,6 +17,7 @@ type
     editFocus: TEdit;
     evLog: TEventLog;
     imgLogo: TImage;
+    PopupMenu1: TPopupMenu;
     tmrInstanceServer: TTimer;
     tmrCounter: TTimer;
     tmrNotify: TTimer;
@@ -31,6 +32,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormWindowStateChange(Sender: TObject);
     procedure imgLogoClick(Sender: TObject);
+    procedure PopupMenu1ItemClick(Sender: TObject);
     procedure SetFormFocus(Sender: TObject);
     procedure SetKeyFocus();
     procedure ServerReceivedParams(Sender: TBaseSingleInstance;
@@ -48,8 +50,9 @@ type
     procedure showSplash();
     procedure hideSplash(restartIntervalTimer: boolean = true);
     procedure cancelSplash(logType: string);
-    procedure trayNotifyClick(Sender: TObject);
     procedure trayNotifyBalloonClick(Sender: TObject);
+    procedure trayNotifyMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     function usage(): string;
 
   private
@@ -64,6 +67,7 @@ type
     pDisablePageBlock:  boolean;
     pShowCloseButton:   boolean;
     pDisableDragMove:   boolean;
+    pDisableEscape:     boolean;
   end;
 
 var                                                                 
@@ -74,13 +78,16 @@ var
   pAppName:           string = 'SPLASH';
   pMessageNotify:     string = 'Splash will be shown.'#13
     + 'Click here to show immediately or press Esc to cancel.';
+  pCancelNotify:      string = 'Skip splash. Already skip %s time(s), maximum %s allowed.';
+  pNoSkipNotify:      string = 'Force show. Reach maximum %s time(s) skip.';
+  pNotificationClick: string = 'open'; // mode:open/skip
   pDuration:          integer = 10;
   pSize:              integer = 50;
   pInterval:          real = 0;
   pDisableLogging:    boolean = false;
   pDisableKeyLock:    boolean = false;
-  pDisableEscape:     boolean = false;
   pDisableTrayIcon:   boolean = false;
+  pShowTrayMenu:      boolean = true;
   pMaxCancel:         integer = 0;
   pCancelCounter:     integer = 0;
   pDisableMultiScreen:boolean = false;
@@ -131,7 +138,7 @@ begin
   buff:= 'Usage: '#13+ ExtractFileName(Application.ExeName)
     + ' -u url [-t time] [-i interval] [-i size] [-mc maxcnt] '
     + '[-a appname] [-c caption] [-m msg] [-l urlLog] [-f filename] '
-    + '[-db] [-dl] [-de] [-dk] [-dm] [-dd] [-dt] [-mi] [-x] [-w] [-r|-dr]'#13;
+    + '[-db] [-dl] [-de] [-dk] [-dm] [-dd] [-dt] [-sm] [-mi] [-x] [-w] [-r|-dr]'#13;
   buff:= buff + ' -u url     : url of web page to load.'
     + ' Using https://, http://, or file:/// to load file in local computer'#13;
   buff:= buff + ' -t time    : duration splash will show in second (default = '
@@ -143,6 +150,7 @@ begin
   buff:= buff + ' -c caption : application/notification caption (default = '
     + pCaption + ')'#13;
   buff:= buff + ' -m msg     : notification message prior splash appears'#13;
+  buff:= buff + ' -nc mode   : behavior after click on notification message, open or skip (default = open)'#13;
   buff:= buff + ' -a appname : log identifier name (default = '
     + pAppName + ')'#13;
   buff:= buff + ' -l urlLog  : url server to log usage of splash by user'#13;
@@ -156,6 +164,7 @@ begin
   buff:= buff + ' -dk        : disable system key lock'#13;
   buff:= buff + ' -dm        : disable show into multiple screen'#13;
   buff:= buff + ' -dt        : disable tray icon'#13;
+  buff:= buff + ' -sm        : show context menu in tray icon'#13;
   buff:= buff + ' -mc maxcnt : max cancel splash count before splash is forced '
     + 'to be shown (default = 0, it means never force splash to be shown)'#13;
   buff:= buff + ' -mi        : enable multiple instance running application'#13;
@@ -226,6 +235,7 @@ var
   pRegistry: TRegistry;
   pOpenKeyResult: bool = false;
   pAutoRun: bool=false;
+  menuItem: TMenuItem;
 begin
   params := paramList;
   if params = nil then params:= TSTringList.Create;
@@ -241,7 +251,9 @@ begin
         + Application.Title + DirectorySeparator + Application.Title + '.ini';
   end;
   if not FileExists(pIniFile) then pIniFile:= Application.Title + '.ini';
-  pWriteIni:= getParamAsBool(params, '-w', false);// and FileExists(pIniFile);
+  if not FileExists(pIniFile) then
+     pIniFile:= ExtractFilePath(application.ExeName) + Application.Title + '.ini';
+  pWriteIni:= getParamAsBool(params, '-w', false);
 
   // check for multiple instance
   pMultipleInstance:= getParamAsBool(params, '-mi', false);
@@ -337,6 +349,10 @@ begin
   if getParamAsBool(params, '-dt', false) then pDisableTrayIcon:= true;
   if pWriteIni then pMemIni.WriteBool(C_INI,'disableTrayIcon', pDisableTrayIcon);
 
+  if readIni then pShowTrayMenu:= pMemIni.ReadBool(C_INI,'showTrayMenu', pShowTrayMenu);
+  if getParamAsBool(params, '-sm', false) then pShowTrayMenu:= true;
+  if pWriteIni then pMemIni.WriteBool(C_INI,'showTrayMenu', pShowTrayMenu);
+
   if readIni then pMaxCancel:= pMemIni.ReadInteger(C_INI,'maxCancel', pMaxCancel);
   pMaxCancel:= getParamAsInt(params, '-mc', pMaxCancel);
   if pMaxCancel<=0 then pMaxCancel := 0;
@@ -369,6 +385,16 @@ begin
   if buff <> '' then pMessageNotify:= buff;
   if pWriteIni then pMemIni.WriteString(C_INI,'messageNotify',pMessageNotify);
 
+  if readIni then pNotificationClick:= pMemIni.ReadString(C_INI,'notificationClick', pNotificationClick);
+  buff:= getParam(params, '-nc');
+  if buff <> '' then pNotificationClick:= buff;
+  if pWriteIni then pMemIni.WriteString(C_INI,'notificationClick',pNotificationClick);
+
+  if (readIni) then pCancelNotify := pMemIni.ReadString(C_INI,'cancelNotify', pCancelNotify);
+  if (pWriteIni) then pMemIni.WriteString(C_INI,'cancelNotify',pCancelNotify);
+  if (readIni) then pNoSkipNotify := pMemIni.ReadString(C_INI,'noSkipNotify', pNoSkipNotify);
+  if (pWriteIni) then pMemIni.WriteString(C_INI,'noSkipNotify', pNoSkipNotify);
+
   if readIni then pAutoRun:= pMemIni.ReadBool(C_INI, 'autoRun', pAutoRun);
   pAutoRun:= pAutoRun or getParamAsBool(params, '-r', false);
   if getParamAsBool(params, '-dr', false) then pAutoRun:= false;
@@ -399,14 +425,41 @@ begin
     if pOpenKeyResult then
     begin
       if pAutoRun then
-        pRegistry.WriteString(application.title,
-        ExtractFilePath(application.ExeName)
-        + ExtractFileName(application.ExeName))
+        pRegistry.WriteString(application.title, application.ExeName)
       else
         pRegistry.DeleteValue(application.title);
     end;
   finally
     pRegistry.Free;
+  end;
+
+  //FrmMain thisform = this;
+  //pauseIcon = (Icon) resourceManager.GetObject("PAUSE-32x32");
+  // draw tray icon menus
+  if (pShowTrayMenu) then
+  begin
+    trayNotify.PopupMenu := PopupMenu1;
+    menuItem := TMenuItem.Create(PopupMenu1);
+    menuItem.Caption:=pAppName;
+    menuItem.Enabled:=false;
+    PopupMenu1.Items.Add(menuItem);
+
+    menuItem := TMenuItem.Create(PopupMenu1);
+    menuItem.Caption:='-';                   
+    PopupMenu1.Items.Add(menuItem);
+
+    menuItem := TMenuItem.Create(PopupMenu1);
+    menuItem.Caption:='Pause';                 
+    menuItem.OnClick := @PopupMenu1ItemClick;
+    PopupMenu1.Items.Add(menuItem);
+
+    if not pDisableEscape then
+    begin
+      menuItem := TMenuItem.Create(PopupMenu1);
+      menuItem.Caption:='Exit';
+      menuItem.OnClick := @PopupMenu1ItemClick;
+      PopupMenu1.Items.Add(menuItem);
+    end;
   end;
 
   if getParamAsBool(params, '-stop', false) then
@@ -495,6 +548,7 @@ begin
   self.BringToFront();
   //popupAlert.ShowAtPos(Screen.Width - 2,
   //  Screen.WorkAreaHeight - popupAlert.vNotifierForm.Height - 2);
+  trayNotify.BalloonFlags := bfInfo;
   trayNotify.ShowBalloonHint;
 
   SetKeyFocus;
@@ -632,6 +686,7 @@ begin
     frm:=pcloned[i];
     if assigned(frm) then
     begin
+      frm.formCloseRequested := true;
       frm.hide;
       frm.Destroy;
       pCloned[i]:=nil;
@@ -718,7 +773,9 @@ begin
   end;
   for i := 0 to high(pCloned) do
   begin
-    pCloned[i].wbFlash.DefaultURL:=pUrl;
+    pCloned[i].setUrl(pUrl);
+    pCloned[i].Hide;
+    pCloned[i].Show;
     pCloned[i].BringToFront;
   end;
   SetKeyFocus;
@@ -748,24 +805,47 @@ begin
 end;
 
 procedure TFrmMain.cancelSplash(logType: string);
+var
+  ico: String;
+  i: integer;
+  frm: TFrmSplash;
 begin
   if (pCancelCounter >= pMaxCancel) and (pMaxCancel > 0) then
   begin
-     exit;
+    trayNotify.Icon := Application.Icon;
+    trayNotify.BalloonHint := Format(pNoSkipNotify, [inttostr(pMaxCancel)]);
+    trayNotify.BalloonFlags := bfWarning;
+    if (not(pNoSkipNotify='')) then trayNotify.ShowBalloonHint;
+    if not (assigned(pCloned)) then for i := high(pcloned) - 1 to 0 do
+    begin
+      try
+        frm := pCloned[i];
+        if assigned(frm) then frm.formCloseRequested := false;
+      finally
+
+      end;
+    end;
+    exit;
   end;
   pCancelCounter := pCancelCounter + 1;
   hideSplash(false);
+  if (pMaxCancel > 0) then
+  begin
+    trayNotify.Icon := Application.Icon;
+    trayNotify.BalloonHint :=
+      Format(pCancelNotify, [inttostr(pCancelCounter), inttostr(pMaxCancel)]);
+    trayNotify.BalloonFlags := bfWarning;
+    if (not(pCancelNotify = '')) then trayNotify.ShowBalloonHint;
+  end;
   trayNotify.Hint:= pCaption
     + #13'Cancel: ' + inttostr(pCancelCounter) + ' time';
   If pCancelCounter>1 then trayNotify.Hint := trayNotify.Hint+'s';
-  case pCancelCounter of
-    0: trayNotify.Icon:= application.Icon;
-    1,2,3,4,5,6,7,8,9:
-      trayNotify.Icon.LoadFromResourceName(self.ParentWindow,
-        'NUM-' + inttostr(pCancelCounter)+ '-32X32');
-    else
-      trayNotify.Icon.LoadFromResourceName(self.ParentWindow, 'NUM-X-32X32');
-  end;
+  ico := ifthen(pCancelCounter>9, 'X', inttostr(pCancelCounter));
+  ico := Format('NUM-%s-32X32', [ico]);
+  if pCancelCounter<=0 then
+    trayNotify.Icon:= application.Icon
+  else
+    trayNotify.Icon.LoadFromResourceName(self.ParentWindow, ico);
 
   logMe(pappname, purlLog, logType);
   tmrSplash.enabled:=false;
@@ -774,17 +854,26 @@ begin
     application.Terminate;
 end;
 
-procedure TFrmMain.trayNotifyClick(Sender: TObject);
-begin
-  // to prevent multiple splash at the same time
-  if not(tmrSplash.Enabled) and not(tmrNotify.Enabled) then tmrNotifyTimer(nil);
-  SetKeyFocus();
-end;
-
 procedure TFrmMain.trayNotifyBalloonClick(Sender: TObject);
 begin
   // to prevent multiple splash at the same time
-  if not (tmrSplash.Enabled) then tmrNotifyTimer(nil);
+  if not (tmrSplash.Enabled) and (trayNotify.BalloonHint = pMessageNotify) then
+  begin
+    if ('open' = pNotificationClick) then
+        tmrNotifyTimer(nil)
+    else
+        cancelSplash('OFF');
+  end;
+  SetKeyFocus();
+end;
+
+procedure TFrmMain.trayNotifyMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+                                              
+  // to prevent multiple splash at the same time
+  if not(tmrSplash.Enabled) and not(tmrNotify.Enabled) and (Button=mbLeft) then
+     tmrNotifyTimer(nil);
   SetKeyFocus();
 end;
 
@@ -805,6 +894,38 @@ end;
 procedure TFrmMain.imgLogoClick(Sender: TObject);
 begin
   showmessage(usage + #13#13#$C2#$A9' @ablehunder :)'); // what's wrong with #169?
+end;
+
+procedure TFrmMain.PopupMenu1ItemClick(Sender: TObject);
+var
+  menuItem : TMenuItem;
+  ico : string;
+begin
+  if not (Sender is TMenuItem) then exit;
+  menuItem := TMenuItem(Sender);
+  case (menuItem.Caption) of
+  'Pause':
+    begin
+      tmrPlay.Enabled := false;
+      trayNotify.Icon.LoadFromResourceName(self.ParentWindow, 'PAUSE-32X32');
+      menuItem.Caption := 'Resume';
+    end;
+  'Resume':
+    begin
+      tmrPlay.Enabled := true;
+      ico := ifthen(pCancelCounter>9, 'X', inttostr(pCancelCounter));
+      ico := Format('NUM-%s-32X32', [ico]);
+      if pCancelCounter<=0 then
+        trayNotify.Icon:= Application.Icon
+      else
+        trayNotify.Icon.LoadFromResourceName(self.ParentWindow, ico);
+      menuItem.Caption := 'Pause';
+    end;
+  'Exit':
+    begin
+      application.Terminate;
+    end
+  end;
 end;
 
 procedure TFrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -828,6 +949,7 @@ begin
       //  Screen.WorkAreaHeight - popupAlert.vNotifierForm.Height - 2);
       trayNotify.BalloonTitle:= pCaption;
       trayNotify.BalloonHint:=pMessageNotify;
+      trayNotify.BalloonFlags := bfInfo;
       trayNotify.ShowBalloonHint ;
     end;
 end;

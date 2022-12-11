@@ -6,8 +6,8 @@ interface
 
 uses
   Windows, Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Buttons, ActiveX, uWVWindowParent, uWVBrowser, uWVWinControl,
-  uWVTypeLibrary, uWVLoader, uWVBrowserBase;
+  Buttons, ActiveX, uWVWindowParent, uWVBrowser, uWVWinControl, URIParser,
+  uWVTypeLibrary, uWVLoader, uWVTypes, uWVBrowserBase;
 
 const
  IID_VDM: TGUID ='{A5CD92FF-29BE-454C-8D04-D82879FB3F1B}';
@@ -36,6 +36,7 @@ type
     procedure SetKeyFocus();
     procedure FormResize(Sender: TObject);
     procedure initialize(monitorNum: integer; formSize:integer);
+    procedure setUrl(url: String);
     procedure resizeForm;
     procedure FormCreate(Sender: TObject);
     procedure tmrVDesktopTimer(Sender: TObject);
@@ -53,7 +54,7 @@ type
   private
     pMonitorNum: integer;
   public
-
+    formCloseRequested: boolean;
   end;
 
   {$EXTERNALSYM IVirtualDesktopManager}
@@ -78,6 +79,7 @@ uses FrmMain;
 
 procedure TFrmSplash.initialize(monitorNum: integer; formSize:integer);
 begin
+  self.icon :=formMain.icon;
   self.Caption:=formMain.Caption;
   self.pMonitorNum:=monitorNum;
   self.visible:=true;
@@ -107,6 +109,23 @@ begin
 
 end;
 
+
+procedure TFrmSplash.setUrl(url: String);
+var
+  navurl: String;
+begin
+  if Trim(url) = '' then exit;
+  navurl := url;
+  if not IsAbsoluteURI(url) then
+  begin
+       if FileExists(url) then
+          navurl:= FilenameToURI(ExpandFileName(url))
+       else
+          navurl:= FilenameToURI(url);
+  end;
+  if (navurl<>'') then self.wbFlash.DefaultURL:=navurl;
+end;
+
 procedure TFrmSplash.resizeForm;
 begin
   self.wbContainer.top := 0;
@@ -120,7 +139,10 @@ begin
   wbContainer.Visible:= not(GlobalWebView2Loader.InitializationError
     or (wbFlash.DefaultURL=''));
   if GlobalWebView2Loader.InitializationError then
+  begin
     self.Edit1.Text:=GlobalWebView2Loader.ErrorMessage;
+    self.Edit1.visible :=true;
+  end;
 
 end;
 
@@ -232,8 +254,8 @@ end;
 procedure TFrmSplash.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   //CanClose:=false;
-  formmain.FormCloseQuery(Sender, CanClose);
-  if CanClose then
+  if formCloseRequested then exit;
+  if not(formmain.pDisableEscape) then
   begin
     CanClose:=false;
     formmain.cancelSplash('OFF');
@@ -286,6 +308,7 @@ initialization
   If Not DirectoryExists(cacheDir) then CreateDir (cacheDir);
   GlobalWebView2Loader                 := TWVLoader.Create(nil);
   GlobalWebView2Loader.UserDataFolder  := cacheDir;
+  GlobalWebView2Loader.AutoplayPolicy  := TWVAutoplayPolicy.appNoUserGestureRequired;
   GlobalWebView2Loader.KioskPrinting   := True; // This property enables silent priting
   GlobalWebView2Loader.DisableFeatures := 'msWebOOUI,msPdfOOUI';  // Disable the text selection context menu
   GlobalWebView2Loader.StartWebView2;

@@ -82,8 +82,12 @@ object FrmMain: TFrmMain
     Top = 256
   end
   object trayNotify: TTrayIcon
-    OnClick = trayNotifyClick
+    OnMouseUp = trayNotifyMouseUp
     Left = 112
     Top = 160
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 109
+    Top = 221
   end
 end

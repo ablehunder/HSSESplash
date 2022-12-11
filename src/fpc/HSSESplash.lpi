@@ -13,7 +13,7 @@
         <TextDesc Value="Splash for Windows"/>
       </XPManifest>
       <Icon Value="0"/>
-      <Resources Count="10">
+      <Resources Count="11">
         <Resource_0 FileName="..\..\res\num\num-1-32x32.ico" Type="ICON" ResourceName="NUM-1-32X32"/>
         <Resource_1 FileName="..\..\res\num\num-2-32x32.ico" Type="ICON" ResourceName="NUM-2-32X32"/>
         <Resource_2 FileName="..\..\res\num\num-3-32x32.ico" Type="ICON" ResourceName="NUM-3-32X32"/>
@@ -24,6 +24,7 @@
         <Resource_7 FileName="..\..\res\num\num-8-32x32.ico" Type="ICON" ResourceName="NUM-8-32X32"/>
         <Resource_8 FileName="..\..\res\num\num-9-32x32.ico" Type="ICON" ResourceName="NUM-9-32X32"/>
         <Resource_9 FileName="..\..\res\num\num-x-32x32.ico" Type="ICON" ResourceName="NUM-X-32X32"/>
+        <Resource_10 FileName="..\..\res\num\pause-32x32.ico" Type="ICON" ResourceName="PAUSE-32X32"/>
       </Resources>
     </General>
     <VersionInfo>
@@ -39,7 +40,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="..\..\HSSESplash"/>
+            <Filename Value="..\..\bin\HSSESplash"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -114,6 +115,7 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
+      <OpenInFileMan Value="True"/>
       <UseFileFilters Value="True"/>
     </PublishOptions>
     <RunParams>
