@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Microsoft.Web.WebView2.Core;
 
 namespace HSSESplash
 {
@@ -109,7 +110,13 @@ namespace HSSESplash
         
         private async Task InitializeAsyncWebView2()
         {
-            await wbFlash.EnsureCoreWebView2Async(null);
+            // enable youtube autoplay
+            CoreWebView2EnvironmentOptions wbopt = new CoreWebView2EnvironmentOptions("--autoplay-policy=no-user-gesture-required");
+            string appdatapath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Application.ProductName) ;
+            if (!Directory.Exists(appdatapath)) Directory.CreateDirectory(appdatapath);
+            CoreWebView2Environment wbenv = await CoreWebView2Environment.CreateAsync(null, appdatapath, wbopt);
+            
+            await wbFlash.EnsureCoreWebView2Async(wbenv);
         }
 
         private void SetKeyFocus()
