@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <HSSESplash>
     <url help="url of web page to load. Using https://, http://, or file:// for local computer, or any file content either absolute path or relative path to current working directory">
-        ..\..\samples\randomredirect.html
+        media\randomredirect.html
     </url>
     <appName default="SPLASH" help="Identifier to system or log.">
         HSSESplash 

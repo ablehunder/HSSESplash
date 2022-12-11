@@ -24,4 +24,16 @@
       <TargetPath>HSSESplash.xml</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
+  <ItemGroup>
+    <ContentWithTargetPath Include="..\..\samples\randomredirect.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>media/randomredirect.html</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+  <ItemGroup>
+    <ContentWithTargetPath Include="..\..\samples\ergo.id.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>media/ergo.id.png</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
 </Project>

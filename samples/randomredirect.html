@@ -4,7 +4,9 @@
 <script language="javascript">
 var fixperhour=false; // false = play random at any time, true = play same content at the same hour
 var ru = [ // add any media you want to be shown
-    "ergo.id.png", "panduan.png", "StretchAtYourDesk.mp4"
+    "ergo.id.png", "https://www.youtube.com/embed/KBaSGF6kYqw?start=2&rel=0&autoplay=1"
+    //, "panduan.png"
+    //, "StretchAtYourDesk.mp4"
  ],d=new Date(),r=fixperhour?(d.getDate()+d.getHours())%ru.length:Math.floor(Math.random()*ru.length); 
 </script>
 </head>
